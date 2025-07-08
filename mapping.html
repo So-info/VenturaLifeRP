@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mapping exclusif - VenturaLife RP</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Orbitron:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+  <style>
+    html, body { height: 100%; margin:0; }
+    body {
+      min-height:100vh;
+      background: linear-gradient(180deg,#1c1c28 0%, #140034 100%), url('ventura-bg.jpg') no-repeat center center fixed;
+      background-size: cover;
+      color: #fff;
+      font-family: 'Inter', sans-serif;
+      margin:0; padding:0;
+      overflow-x:hidden;
+    }
+    body::before {
+      content: "";
+      position: fixed;
+      z-index: 0;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: url('ventura-bg.jpg') no-repeat center center fixed;
+      background-size: cover;
+      opacity: 0.23;
+      pointer-events: none;
+      will-change: background-position;
+      transition: background-position 0.6s cubic-bezier(.25,.1,.32,1);
+    }
+    nav {
+      background: rgba(24,22,38,0.87);
+      -webkit-backdrop-filter: blur(10px);
+      backdrop-filter: blur(10px);
+      display:flex;gap:1.4rem;justify-content:center;align-items:center;
+      padding:1rem 1.7rem;margin-bottom:2.2rem;box-shadow:0 8px 25px #14003466;
+      border-radius:0 0 18px 18px;
+      position: sticky; top:0; z-index: 10;
+      animation: navfadein 0.8s cubic-bezier(.5,.1,.25,1);
+    }
+    @keyframes navfadein {0%{transform:translateY(-40px);opacity:0;}100%{transform:none;opacity:1;}}
+    nav a {
+      color:#ff9ba3; font-weight:600; text-decoration:none; transition:.19s;
+      letter-spacing:0.6px; font-size:1.06rem; position:relative;
+    }
+    nav a:after {
+      content:""; position:absolute; left:0; right:0; bottom:-6px; height:2px;
+      background:linear-gradient(95deg,#ff5f7b88,#ff9ba366 95%);
+      border-radius:2px; opacity:0; transform:scaleX(0);
+      transition:.19s cubic-bezier(.64,.03,.32,1.24);
+    }
+    nav a:hover { color:#fff; text-shadow:0 0 14px #ff5f7b77; }
+    nav a:hover:after {opacity:1; transform:scaleX(1);}
+    .container {
+      position: relative;
+      max-width:1100px; margin:2.7rem auto 1.5rem;
+      background:rgba(38,30,54,0.92); border-radius:22px; padding:2.8rem 1.2rem 6.3rem;
+      box-shadow:0 8px 44px #ff5f7b22,0 10px 32px #0002;
+      animation: fadeinup 1.0s both cubic-bezier(.35,.75,.56,1.08);
+      z-index: 2;
+      overflow:hidden;
+    }
+    .container::before {
+      content:"";
+      position:absolute;left:35%;top:-22px;width:140px;height:22px;
+      background:radial-gradient(circle, #ff5f7baa 45%, transparent 70%);
+      opacity:.24; pointer-events:none; filter:blur(10px);
+      animation: glow-anim 4.5s linear infinite alternate;
+    }
+    @keyframes glow-anim {
+      0%{ opacity:.13; left:38%;}
+      100%{ opacity:.31; left:57%;}
+    }
+    h1 {
+      font-family:'Orbitron',sans-serif;
+      color:#ff9ba3;text-align:center;margin-bottom:1.4rem;
+      font-size:2.4rem;letter-spacing:1px;
+      background: linear-gradient(95deg,#ff9ba3 80%,#fff3 100%);
+      -webkit-background-clip: text;background-clip:text;-webkit-text-fill-color:transparent;
+      animation: flicker 3s infinite, popin .95s cubic-bezier(.45,.12,.52,.94);
+      filter: drop-shadow(0 0 12px #ff5f7b44);
+    }
+    @keyframes popin {0%{transform:scale(.72);opacity:0;}100%{transform:none;opacity:1;}}
+    @keyframes flicker {
+      0%,100%{opacity:1;}
+      50%{opacity:.75;}
+      53%{opacity:.47;}
+      56%{opacity:.99;}
+    }
+    @keyframes fadeinup {0%{opacity:0;transform:translateY(35px);}100%{opacity:1;transform:none;}}
+    /* SLIDER HYPER DYNAMIQUE */
+    .swiper {
+      position:relative;
+      overflow:visible;
+      background:rgba(38,30,54,0.80);
+      margin-bottom:2.2rem;
+      border-radius:17px;
+      box-shadow:0 6px 28px #0a0a201a;
+      opacity:0;transform:translateY(25px);transition:opacity .7s,transform .7s;
+      filter:drop-shadow(0 0 24px #ff5f7b33);
+      min-height:370px;
+    }
+    .swiper.revealed {opacity:1;transform:none;}
+    .swiper-wrapper {position:relative;}
+    .swiper-slide {
+      position:relative;
+      transition: box-shadow .25s cubic-bezier(.31,.88,.48,1.19), transform .36s cubic-bezier(.25,1.8,.47,.87);
+      box-shadow:0 0 0 transparent;
+      filter:blur(1.3px) grayscale(0.18) brightness(0.98);
+      opacity:.6;
+      transform:scale(0.93) perspective(900px) rotateY(8deg);
+      z-index:1;
+    }
+    .swiper-slide-active {
+      box-shadow:0 0 44px #ff5f7baa, 0 0 60px #14003466;
+      filter:blur(0) grayscale(0) brightness(1.07) drop-shadow(0 0 24px #ff9ba3aa);
+      opacity:1;
+      transform:scale(1.04) perspective(900px) rotateY(0deg);
+      z-index:2;
+      animation: slider-bounce 0.48s cubic-bezier(.17,.84,.44,1.22);
+    }
+    @keyframes slider-bounce {0%{transform:scale(0.94);}70%{transform:scale(1.07);}100%{transform:scale(1.04);}}
+    .swiper-slide-next, .swiper-slide-prev {
+      filter:blur(0.6px) grayscale(0.08);
+      opacity:.86;
+      transform:scale(0.99) perspective(900px) rotateY(-8deg);
+      z-index:1;
+    }
+    .swiper-slide img {
+      width:100%; border-radius:10px;display:block;
+      transition:transform .28s, filter .22s, box-shadow .23s;
+      box-shadow:0 7px 34px #ff5f7b1a;
+      will-change: transform, filter;
+      background:#191926;
+      min-height:250px;
+      object-fit:cover;
+    }
+    .swiper-slide-active img {
+      transform: scale(1.06) rotate(-1.5deg);
+      filter:brightness(1.14) saturate(1.13) drop-shadow(0 0 18px #ff9ba3cc);
+      box-shadow:0 0 44px #ff5f7baa, 0 0 60px #14003444;
+      outline: 2.2px solid #ff5f7b77;
+      outline-offset: 5px;
+    }
+    /* Halo lumineux */
+    .swiper-slide-active::before {
+      content:'';
+      position:absolute;left:50%;top:50%;transform:translate(-50%,-51%);
+      width:90%;height:103%;z-index:-1;
+      background:radial-gradient(circle, #ff9ba388 0%, transparent 68%);
+      opacity:0.65;filter:blur(5px);
+      pointer-events:none;
+      border-radius:12px;
+      animation:halo-glow 2.3s infinite alternate;
+    }
+    @keyframes halo-glow {0%{opacity:.4;}100%{opacity:.7;}}
+
+    /* ======= CAPTION EN CARD NEON MIEUX PLACÉ ======= */
+    .caption {
+      position: absolute;
+      left: 50%;
+      bottom: 60px;
+      transform: translateX(-50%) translateY(70px);
+      min-width: 170px;
+      max-width: 85%;
+      background: rgba(38,30,54,0.94);
+      color: #ffdae6;
+      border: 1.5px solid #ff5f7baa;
+      border-radius: 13px;
+      box-shadow: 0 4px 24px #ff5f7b33, 0 0 10px #ff5f7b44;
+      font-size: 1.08rem;
+      font-style: italic;
+      font-weight: 500;
+      padding: 0.66rem 1.17rem;
+      text-align: center;
+      letter-spacing: .07px;
+      opacity: 0;
+      transition: opacity .38s, transform .44s cubic-bezier(.44,.9,.23,1.17);
+      z-index: 9;
+      pointer-events: none;
+      user-select: none;
+      backdrop-filter: blur(8px);
+      white-space: normal;
+    }
+    .swiper-slide-active .caption {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+      animation: caption-pop 1.03s cubic-bezier(.37,.22,.44,1.02);
+    }
+    @keyframes caption-pop {
+      0% { opacity:0; transform:translateX(-50%) translateY(35px);}
+      60% { opacity:1; transform:translateX(-50%) translateY(-5px) scale(1.05);}
+      100% { opacity:1; transform:translateX(-50%) translateY(0);}
+    }
+    @media (max-width:700px){
+      .caption {font-size: .93rem; padding: 0.48rem 0.7rem; bottom: 34px;}
+    }
+
+    /* Pagination custom glow - PLUS BAS */
+    .swiper-pagination {
+      position: absolute !important;
+      left: 0; right: 0;
+      bottom: -46px !important;
+      display: flex; justify-content: center; align-items: center;
+      z-index: 12;
+      pointer-events: auto;
+      gap: 6px;
+      height:32px;
+    }
+    .swiper-pagination-bullet {
+      background:#ff5f7b55;
+      border:1.6px solid #ff9ba3;
+      opacity:0.72;
+      width:16px;height:16px;
+      margin:0 8px !important;
+      box-shadow:0 0 14px #ff5f7b77;
+      transition:.17s cubic-bezier(.45,.3,.35,.96);
+      position:relative;
+    }
+    .swiper-pagination-bullet-active {
+      background:linear-gradient(95deg,#ff5f7b 70%,#fff 100%);
+      border-color:#fff;
+      box-shadow:0 0 19px #ff5f7baa, 0 0 9px #fff8;
+      opacity:1;
+      transform:scale(1.18);
+    }
+
+    /* Flèches améliorées (décalées vers le haut) */
+    .swiper-button-next, .swiper-button-prev {
+      color:#ff9ba3;
+      background:rgba(38,30,54,0.72);
+      border-radius:50%;
+      width:38px;height:38px;
+      box-shadow:0 0 14px #ff5f7b44;
+      border:1px solid #ff5f7b55;
+      transition:.21s cubic-bezier(.55,.23,.64,.71);
+      top:46%;
+      transform:translateY(-46%);
+    }
+    .swiper-button-next:hover, .swiper-button-prev:hover {
+      background:linear-gradient(95deg,#ff5f7b 60%,#d14c75 100%);
+      color:#fff;
+      box-shadow:0 0 18px #ff5f7b88, 0 0 8px #fff7;
+      transform:scale(1.12) translateY(-46%);
+    }
+    .swiper-button-next::after, .swiper-button-prev::after { font-size:1.32rem; }
+
+    /* Overlay de description (par dessus le slider) */
+    .desc-overlay {
+      position: absolute;
+      left: 50%; top: 26px;
+      transform: translateX(-50%);
+      z-index: 10;
+      background: rgba(38,30,54,0.88);
+      border-radius: 14px;
+      box-shadow: 0 4px 30px #14003444, 0 0 15px #ff5f7b44;
+      color: #fff7fa;
+      font-size: 1.13rem;
+      text-align: center;
+      padding: 1.12rem 2.4rem 1.08rem 2.4rem;
+      max-width: 82vw;
+      min-width: 210px;
+      font-weight: 500;
+      letter-spacing: .1px;
+      border: 1.5px solid #ff5f7b66;
+      backdrop-filter: blur(6px);
+      animation: fadeinup 1s .22s both cubic-bezier(.36,.82,.54,1.05);
+    }
+    @media (max-width: 700px) {
+      .desc-overlay { font-size: .97rem; padding: 0.8rem 1.1rem;}
+    }
+    .swiper { position:relative; }
+
+    /* Barre retour flottante en bas du container */
+    .back-btn {
+      display: inline-block;
+      position: absolute;
+      left: 50%;
+      bottom: 18px;
+      transform: translateX(-50%);
+      background: linear-gradient(95deg, #ff5f7b 40%, #d14c75 100%);
+      color: #fff;
+      font-size: 1.13rem;
+      font-weight: 600;
+      padding: 0.85rem 2.3rem;
+      border: none; border-radius: 16px; text-decoration:none;
+      box-shadow:0 5px 18px #ff5f7b33, 0 0 0 #ff5f7b88 inset;
+      cursor:pointer;transition:transform .16s,box-shadow .19s, filter .14s;
+      text-align:center;
+      filter:drop-shadow(0 0 10px #ff5f7b44);
+      animation: btnfadein 1.0s .24s both;
+      z-index:30;
+    }
+    @keyframes btnfadein {0%{opacity:0;transform:scale(.88);}100%{opacity:1;transform:none;}}
+    .back-btn:active {
+      transform: scale(0.96) translateX(-50%);
+      box-shadow:0 1px 2px #ff5f7b88;
+      filter:brightness(0.94);
+    }
+    .back-btn:hover { transform:scale(1.04) translateX(-50%) translateY(-2px);box-shadow:0 9px 20px #ff5f7b88;}
+    @media (max-width: 800px) {
+      .container{padding:1rem 0.2rem 5.5rem;}
+      .back-btn{font-size:.99rem;padding:0.7rem 1.4rem;}
+    }
+    @media (max-width: 600px) {
+      .container {padding:.7rem 0.05rem 5rem;}
+      nav {font-size:0.98rem;}
+      .back-btn {bottom: 10px;}
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="index.html#accueil">Accueil</a>
+    <a href="index.html#features">Fonctionnalités</a>
+    <a href="index.html#galerie">Galerie</a>
+    <a href="index.html#avis">Avis</a>
+    <a href="index.html#contact">Contact</a>
+    <a href="manuel.html" target="_blank">📘 Manuel</a>
+  </nav>
+  <div class="container">
+    <h1>🏙️ Mapping exclusif VenturaLife</h1>
+    <div class="swiper mySwiper">
+      <div class="desc-overlay">
+        Découvrez quelques-uns des mappings inédits de VenturaLife RP :<br>
+        intérieurs custom, quartiers uniques, lieux secrets, et une vraie immersion !
+      </div>
+      <div class="swiper-wrapper">
+        <div class="swiper-slide"><img src="bg.jpg" alt="Commissariat Ventura City"><div class="caption">Commissariat central sur-mesure</div></div>
+        <div class="swiper-slide"><img src="bg2.jpg" alt="Hôpital custom"><div class="caption">Hôpital moderne entièrement custom</div></div>
+        <div class="swiper-slide"><img src="bg3.jpg" alt="QG illégal RP"><div class="caption">QG illégal, planques et intérieurs secrets</div></div>
+        <div class="swiper-slide"><img src="bg4.jpg" alt="Plage RP"><div class="caption">Plage RP animée & décorée</div></div>
+        <div class="swiper-slide"><img src="bg5.jpg" alt="Quartier de nuit"><div class="caption">Quartier nightlife & lieux festifs</div></div>
+      </div>
+      <div class="swiper-pagination"></div>
+      <div class="swiper-button-prev"></div>
+      <div class="swiper-button-next"></div>
+    </div>
+    <a href="index.html#features" class="back-btn">← Retour</a>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/scrollreveal"></script>
+  <script>
+    // Anim apparition galerie
+    ScrollReveal().reveal('.swiper', {
+      distance: '35px',
+      duration: 820,
+      origin: 'bottom',
+      opacity: 0,
+      reset: false,
+      beforeReveal: el => el.classList.add('revealed')
+    });
+    // Swiper dynamique
+    const swiper = new Swiper('.mySwiper', {
+      loop: true,
+      grabCursor: true,
+      centeredSlides: true,
+      slidesPerView: 'auto',
+      coverflowEffect: {
+        rotate: 25,
+        stretch: 0,
+        depth: 160,
+        modifier: 1.2,
+        slideShadows: false,
+      },
+      effect: "coverflow",
+      pagination: { el: '.swiper-pagination', clickable: true },
+      navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
+      speed: 600,
+    });
+    // Parallax effet avec le scroll (sur le background)
+    window.addEventListener('scroll', () => {
+      const scrolled = window.scrollY;
+      document.body.style.backgroundPosition = `center ${(scrolled * 0.18)}px`;
+      document.body.style.backgroundSize = `cover`;
+      document.body.style.backgroundAttachment = 'fixed';
+    });
+    // Animation nav on scroll
+    let lastScroll = 0;
+    window.addEventListener('scroll',()=>{
+      let curr = window.scrollY;
+      const nav = document.querySelector('nav');
+      if(curr > lastScroll && curr > 44) nav.style.opacity = 0.89;
+      else nav.style.opacity = 1;
+      lastScroll = curr;
+    });
+  </script>
+</body>
+</html>
